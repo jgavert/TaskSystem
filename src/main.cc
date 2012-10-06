@@ -4,10 +4,10 @@
 #include <mutex>
 #include <math.h>
 #include "tasksystem.h"
-#define THREADS 1
+#define THREADS 4
 //#define SAMPLES 1000000000
 #define SAMPLES 1000000000
-#define WORKLOAD 1
+#define WORKLOAD 10
 
 void pii(void* input, void* output)
 {
