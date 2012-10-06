@@ -14,12 +14,14 @@ void pii(void* input, void* output)
 	long double *x = (long double*) output;
 	long double *y = (long double*) input;
 	//printf("start: %Lf, end %Lf\n", y[0], y[1]);
+	*x = 0;
 	for (int n = y[0]; n <= y[1]; n++)
 	{
 	  *x += 1/pow(n,2.0);
 	  //printf("%Lf\n", *x);
 	}
 	//printf("%Lf\n", *x);
+	//printf("Finished something!\n");
 }
 
 double pii2()
@@ -50,12 +52,18 @@ int main(void)
 		z += splitter;
 		input[i+1] = z;
 	}
-	TaskSystem manager(THREADS);
+	TaskSystem manager(THREADS, false);
+	int workID = manager.newWork();
+	printf("First workID: %d", workID);
 	for (int i=0; i<WORKLOAD;i++)
 		manager.newTask(pii, (void*)(input+(i*2)), (void*)(output+i));
-
-	manager.help();
-	//while (!manager.done()){}
+	int workID2 = manager.newWork();
+	printf("Second workID: %d", workID2);
+	for (int i=0; i<WORKLOAD;i++)
+		manager.newTask(pii, (void*)(input+(i*2)), (void*)(output+i));
+	//manager.help();
+	while (!manager.taskDone(workID)){}
+	while (!manager.taskDone(workID2)){}
 
 	for (int i=0;i<WORKLOAD;i++)
 	{
