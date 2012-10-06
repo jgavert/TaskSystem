@@ -4,10 +4,10 @@
 #include <mutex>
 #include <math.h>
 #include "tasksystem.h"
-#define THREADS 3
+#define THREADS 1
 //#define SAMPLES 1000000000
 #define SAMPLES 1000000000
-#define WORKLOAD 10
+#define WORKLOAD 1
 
 void pii(void* input, void* output)
 {
@@ -55,7 +55,7 @@ int main(void)
 		manager.newTask(pii, (void*)(input+(i*2)), (void*)(output+i));
 
 	manager.help();
-	while (!manager.done()){}
+	//while (!manager.done()){}
 
 	for (int i=0;i<WORKLOAD;i++)
 	{

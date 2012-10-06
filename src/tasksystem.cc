@@ -16,13 +16,13 @@ void sleepAndWork()
 		task asd;
 		bool fuck=false;
 		idleThreads--;
-		std::lock_guard<std::mutex> guard(mutex);
 		{
-		if (workCounter > 0) {
-			asd = work.back();
-			work.pop_back();
-			workCounter--;
-			fuck = true;
+			std::lock_guard<std::mutex> guard(mutex);
+			if (workCounter > 0) {
+				asd = work.back();
+				work.pop_back();
+				workCounter--;
+				fuck = true;
 			}
 		}
 		if (fuck){
@@ -38,13 +38,13 @@ void TaskSystem::help()
 		task asd;
 		bool fuck=false;
 		idleThreads--;
-		std::lock_guard<std::mutex> guard(mutex);
 		{
-		if (workCounter > 0) {
-			asd = work.back();
-			work.pop_back();
-			workCounter--;
-			fuck = true;
+			std::lock_guard<std::mutex> guard(mutex);
+			if (workCounter > 0) {
+				asd = work.back();
+				work.pop_back();
+				workCounter--;
+				fuck = true;
 			}
 		}
 		if (fuck){
