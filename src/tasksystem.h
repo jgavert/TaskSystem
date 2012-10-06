@@ -27,6 +27,7 @@ public:
 	void newTask(void (*func)(void*, void*), void*, void*);
 	bool done();
 private:
+	int threadCount;
 };
 
 #endif

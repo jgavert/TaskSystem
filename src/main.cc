@@ -2,29 +2,66 @@
 #include <iostream>
 #include <vector>
 #include <mutex>
+#include <math.h>
 #include "tasksystem.h"
+#define THREADS 4
+#define SAMPLES 800000000
+#define WORKLOAD 10
 
-
-void foo(void* data, void* output)
+void pii(void* input, void* output)
 {
-	int* x = (int*) data;
-	int* y = (int*) output;
-	*y = (*x)*(*x);
+	long double *x = (long double*) output;
+	long double *y = (long double*) input;
+	//printf("start: %Lf, end %Lf\n", y[0], y[1]);
+	for (int n = y[0]; n <= y[1]; n++) 
+	{ 
+	  *x += 1/pow(n,2.0);
+	  //printf("%Lf\n", *x);
+	}
+	//printf("%Lf\n", *x);
 }
+
+double pii2()
+{
+long double x=0;
+//printf("%Lf\n", x);
+for (int n = 2; n <= SAMPLES; n++) 
+{ 
+  x += 1/pow(n,2.0);
+}
+//printf("%Lf\n", x);
+double pi =sqrt(6*(1+x));
+return pi;
+}
+
 
 int main(void)
 {
-	int *data = new int[10]{2, 3, 4, 5, 6, 7 ,8 ,9 ,8 ,7};
-	int *output = new int[10]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	foo( (void*)(data+1), (void*)(output+1));
-	std::cout << "Test without TaskSystem: " << output[1] << std::endl;
-	TaskSystem manager(4);
-	for (int i=0; i<10;i++)
-		manager.newTask(foo, (void*)(data+i), (void*)(output+i));
+	long double x = 0;
+	long double *output = new long double[WORKLOAD];
+	long double *input = new long double[WORKLOAD*2];
+
+	long double splitter = SAMPLES/WORKLOAD;
+	long double z = 1;
+	for (int i=0;i<WORKLOAD*2;i+=2)
+	{
+		input[i] = z+1;
+		z += splitter;
+		input[i+1] = z;
+	}
+	TaskSystem manager(THREADS);
+	for (int i=0; i<WORKLOAD;i++)
+		manager.newTask(pii, (void*)(input+(i*2)), (void*)(output+i));
+
 	while (!manager.done()){}
-	std::cout << output[0];
-	for (int i=1;i<10;i++)
-		std::cout << ", " << output[i];
-	std::cout << std::endl;
+
+	for (int i=0;i<WORKLOAD;i++)
+	{
+		x += output[i];
+	}
+
+	double pi = sqrt(6*(1+x));
+	std::cout << "Pii approx is " << pi << std::endl;
+	//std::cout << "Pii approx is " << pii2() << std::endl;
 	return 0;
 }
