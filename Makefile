@@ -51,6 +51,7 @@ clean:
 
 dirs:
 	@mkdir -p $(OBJ)
+	@mkdir -p $(BIN)
 	@mkdir -p $(patsubst $(SRC)/%, $(OBJ)/%, $(shell find $(PROGRAM_DIRS) -type d))
 
 ifneq ($(MAKECMDGOALS),clean)
