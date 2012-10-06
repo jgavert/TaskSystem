@@ -26,6 +26,7 @@ public:
 	~TaskSystem();
 	void newTask(void (*func)(void*, void*), void*, void*);
 	bool done();
+	void help();
 private:
 	int threadCount;
 };

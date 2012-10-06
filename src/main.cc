@@ -4,8 +4,9 @@
 #include <mutex>
 #include <math.h>
 #include "tasksystem.h"
-#define THREADS 4
-#define SAMPLES 800000000
+#define THREADS 3
+//#define SAMPLES 1000000000
+#define SAMPLES 1000000000
 #define WORKLOAD 10
 
 void pii(void* input, void* output)
@@ -13,8 +14,8 @@ void pii(void* input, void* output)
 	long double *x = (long double*) output;
 	long double *y = (long double*) input;
 	//printf("start: %Lf, end %Lf\n", y[0], y[1]);
-	for (int n = y[0]; n <= y[1]; n++) 
-	{ 
+	for (int n = y[0]; n <= y[1]; n++)
+	{
 	  *x += 1/pow(n,2.0);
 	  //printf("%Lf\n", *x);
 	}
@@ -25,8 +26,8 @@ double pii2()
 {
 long double x=0;
 //printf("%Lf\n", x);
-for (int n = 2; n <= SAMPLES; n++) 
-{ 
+for (int n = 2; n <= SAMPLES; n++)
+{
   x += 1/pow(n,2.0);
 }
 //printf("%Lf\n", x);
@@ -53,6 +54,7 @@ int main(void)
 	for (int i=0; i<WORKLOAD;i++)
 		manager.newTask(pii, (void*)(input+(i*2)), (void*)(output+i));
 
+	manager.help();
 	while (!manager.done()){}
 
 	for (int i=0;i<WORKLOAD;i++)
