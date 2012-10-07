@@ -4,9 +4,9 @@
 #include <mutex>
 #include <math.h>
 #include "tasksystem.h"
-#define THREADS 24
+#define THREADS 20
 #define SAMPLES 2000000000
-#define WORKLOAD 48
+#define WORKLOAD 200
 
 void pii(void* input, void* output)
 {
@@ -60,7 +60,7 @@ int main(void)
 	//printf("Second workID: %d", workID2);
 	//for (int i=0; i<WORKLOAD;i++)
 	//	manager.newTask(pii, (void*)(input+(i*2)), (void*)(output+i));
-	manager.help();
+	manager.help(workID);
 	while (!manager.taskDone(workID)){}
 	//while (!manager.taskDone(workID2)){}
 

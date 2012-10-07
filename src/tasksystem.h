@@ -7,6 +7,7 @@
 #include <iostream>
 #include <deque>
 #include <chrono>
+#include <condition_variable>
 
 struct task
 {
@@ -31,7 +32,7 @@ public:
 	~TaskSystem();
 	void newTask(void (*func)(void*, void*), void*, void*);
 	bool done();
-	void help();
+	void help(int);
 	int newWork();
 	bool taskDone(int );
 private:

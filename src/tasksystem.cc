@@ -1,7 +1,7 @@
 #include "tasksystem.h"
 #define WORKSPACE 50
 
-std::deque<task> work;
+std::deque<task*> work;
 std::atomic<int> workCounter;
 std::vector<std::thread> workers;
 std::mutex mutex;
@@ -9,6 +9,8 @@ std::atomic<bool> alive;
 std::atomic<int> idleThreads;
 std::vector<int> workIDs;
 std::atomic<int> billboard[WORKSPACE];
+std::condition_variable cv;
+std::mutex cv_m;
 
 void sleepAndWork(int id)
 {
@@ -16,14 +18,15 @@ void sleepAndWork(int id)
 	{
 		task* todo;
 		bool fuck=false;
-		while(workCounter==0&&alive){
-			std::this_thread::sleep_for(std::chrono::milliseconds(40));
+		if (workCounter == 0) {
+			std::unique_lock<std::mutex> lk(cv_m);
+			cv.wait(lk);
 		}
 		idleThreads--;
 		{
 			std::lock_guard<std::mutex> guard(mutex);
 			if (workCounter > 0) {
-				todo = &work.front();
+				todo = work.front();
 				work.pop_front();
 				workCounter--;
 				fuck = true;
@@ -38,17 +41,20 @@ void sleepAndWork(int id)
 	}
 }
 
-void TaskSystem::help()
+void TaskSystem::help(int id)
 {
-	while(!done())
+	while(!taskDone(id))
 	{
+		cv.notify_all();
 		task* todo;
 		bool fuck=false;
+		if (workCounter ==0)
+			break;
 		idleThreads--;
 		{
 			std::lock_guard<std::mutex> guard(mutex);
 			if (workCounter > 0) {
-				todo = &work.front();
+				todo = work.front();
 				work.pop_front();
 				workCounter--;
 				fuck = true;
@@ -84,6 +90,7 @@ TaskSystem::TaskSystem(int threads, bool helper)
 TaskSystem::~TaskSystem()
 {
 	alive = false;
+	cv.notify_all();
 	if (outsideHelp) {
 		for (int i=0;i<threadCount-1;i++)
 			workers[i].join();
@@ -104,10 +111,11 @@ void TaskSystem::newTask(void (*func)(void*, void*), void* input, void* output)
 {
 	std::lock_guard<std::mutex> guard(mutex);
 	{
-		work.push_back(task(func, input, output, workID));
+		work.push_back(new task(func, input, output, workID));
 		workCounter++;
 		billboard[workID]++;
 	}
+	cv.notify_all();
 }
 
 bool TaskSystem::taskDone(int id)
