@@ -4,10 +4,9 @@
 #include <mutex>
 #include <math.h>
 #include "tasksystem.h"
-#define THREADS 4
-//#define SAMPLES 1000000000
-#define SAMPLES 1000000000
-#define WORKLOAD 10
+#define THREADS 20
+#define SAMPLES 2000000000
+#define WORKLOAD 32
 
 void pii(void* input, void* output)
 {
@@ -52,18 +51,18 @@ int main(void)
 		z += splitter;
 		input[i+1] = z;
 	}
-	TaskSystem manager(THREADS, false);
+	TaskSystem manager(THREADS, true);
 	int workID = manager.newWork();
-	printf("First workID: %d", workID);
+	//printf("First workID: %d", workID);
 	for (int i=0; i<WORKLOAD;i++)
 		manager.newTask(pii, (void*)(input+(i*2)), (void*)(output+i));
-	int workID2 = manager.newWork();
-	printf("Second workID: %d", workID2);
-	for (int i=0; i<WORKLOAD;i++)
-		manager.newTask(pii, (void*)(input+(i*2)), (void*)(output+i));
-	//manager.help();
+	//int workID2 = manager.newWork();
+	//printf("Second workID: %d", workID2);
+	//for (int i=0; i<WORKLOAD;i++)
+	//	manager.newTask(pii, (void*)(input+(i*2)), (void*)(output+i));
+	manager.help();
 	while (!manager.taskDone(workID)){}
-	while (!manager.taskDone(workID2)){}
+	//while (!manager.taskDone(workID2)){}
 
 	for (int i=0;i<WORKLOAD;i++)
 	{

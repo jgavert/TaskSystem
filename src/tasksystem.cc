@@ -1,7 +1,4 @@
 #include "tasksystem.h"
-#include <iostream>
-#include <vector>
-#include <deque>
 #define WORKSPACE 50
 
 std::deque<task> work;
@@ -17,22 +14,25 @@ void sleepAndWork(int id)
 {
 	while(alive)
 	{
-		task asd;
+		task* todo;
 		bool fuck=false;
+		while(workCounter==0&&alive){
+			std::this_thread::sleep_for(std::chrono::milliseconds(40));
+		}
 		idleThreads--;
 		{
 			std::lock_guard<std::mutex> guard(mutex);
 			if (workCounter > 0) {
-				asd = work.front();
+				todo = &work.front();
 				work.pop_front();
 				workCounter--;
 				fuck = true;
 			}
 		}
 		if (fuck){
-			asd.func(asd.input, asd.output);
-			billboard[asd.id]--;
-			printf("Thread %d: Finished some work on %d.\n", id, asd.id);
+			todo->func(todo->input, todo->output);
+			billboard[todo->id]--;
+			//printf("Thread %d: Finished some work on %d.\n", id, asd->id);
 		}
 		idleThreads++;
 	}
@@ -42,20 +42,21 @@ void TaskSystem::help()
 {
 	while(!done())
 	{
-		task asd;
+		task* todo;
 		bool fuck=false;
 		idleThreads--;
 		{
 			std::lock_guard<std::mutex> guard(mutex);
 			if (workCounter > 0) {
-				asd = work.front();
+				todo = &work.front();
 				work.pop_front();
 				workCounter--;
 				fuck = true;
 			}
 		}
 		if (fuck){
-			asd.func(asd.input, asd.output);
+			todo->func(todo->input, todo->output);
+			billboard[todo->id]--;
 			//printf("Main Thread: Finished some work.\n");
 		}
 		idleThreads++;
