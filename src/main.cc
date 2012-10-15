@@ -14,11 +14,13 @@ void pii(void* input, void* output)
 	long double *y = (long double*) input;
 	//printf("start: %Lf, end %Lf\n", y[0], y[1]);
 	*x = 0;
+//  for (int s = 0; s<10000; s++) {
 	for (int n = y[0]; n <= y[1]; n++)
 	{
 	  *x += 1/pow(n,2.0);
 	  //printf("%Lf\n", *x);
 	}
+  //}
 	//printf("%Lf\n", *x);
 	//printf("Finished something!\n");
 }

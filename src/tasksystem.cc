@@ -20,7 +20,9 @@ void sleepAndWork(int id)
 		bool fuck=false;
 		if (workCounter == 0) {
 			std::unique_lock<std::mutex> lk(cv_m);
+//			printf("Thread %d: waiting for work\n", id);
 			cv.wait(lk);
+//			printf("Thread %d: was released\n", id);
 		}
 		idleThreads--;
 		{
