@@ -3,10 +3,10 @@ PROGRAM_DIRS := $(DIRS)
 
 WARNINGS := -pedantic -Wall -Wextra
 
-CXX      := g++-4.7
-CXXFLAGS := $(WARNINGS) -std=c++11 -lpthread -Ofast
+CXX      := clang++
+CXXFLAGS := $(WARNINGS) -std=c++11 -stdlib=libc++ -Ofast -pthread
 
-LIBS := -lpthread
+LIBS := -pthread -lc++
 
 PROGRAM = bin/main
 

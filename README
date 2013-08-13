@@ -1,0 +1,12 @@
+Can be compiled using g++-4.7
+or as I now figured out with clang++.
+Using latest clang++ (with the full c++11 support)
+and self compiled libc++ from svn.
+
+If you want to compile using g++-4.7:
+remove -lc++ -stdlib=libc++ and replace -pthread with -lpthread in the
+Makefile.
+ofcourse replace clang++ with g++-4.7 or the name that implies g++-4.7 or
+greater.
+
+
