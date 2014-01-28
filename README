@@ -1,12 +1,4 @@
-Can be compiled using g++-4.7
-or as I now figured out with clang++.
-Using latest clang++ (with the full c++11 support)
-and self compiled libc++ from svn.
+Projects idea is to provide a thread pool which handles jobs when given to the pool. Pool expects the job to be reasonably heavy to ensure good performance. Jobs are also expected to know better what memory they can access and what they can't, the threads are not interested about those and will just run the function as is.
 
-If you want to compile using g++-4.7:
-remove -lc++ -stdlib=libc++ and replace -pthread with -lpthread in the
-Makefile.
-ofcourse replace clang++ with g++-4.7 or the name that implies g++-4.7 or
-greater.
-
+Should compile on a linux with g++/clang with c++11 support. Or with some tweaks, on windows and mac.
 

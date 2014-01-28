@@ -4,9 +4,9 @@ PROGRAM_DIRS := $(DIRS)
 WARNINGS := -pedantic -Wall -Wextra
 
 CXX      := clang++
-CXXFLAGS := $(WARNINGS) -std=c++11 -stdlib=libc++ -Ofast -pthread
+CXXFLAGS := $(WARNINGS) -std=c++11 -Ofast -pthread
 
-LIBS := -pthread -lc++
+LIBS := -pthread
 
 PROGRAM = bin/main
 
