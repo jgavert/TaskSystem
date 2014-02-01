@@ -21,13 +21,13 @@ void sleepAndWork(int id)
 	{
 		gotWork = false;
 		if (workCounter == 0) {
-			std::unique_lock<std::mutex> lk(cv_m);
 #if VERBOSE
-			printf("Thread %d: waiting for work\n", id);
+			printf("Thread %d: waiting for work...\n", id);
 #endif
+			std::unique_lock<std::mutex> lk(cv_m);
 			cv.wait(lk);
 #if VERBOSE
-			printf("Thread %d: was released\n", id);
+			printf("Thread %d: getting work...\n", id);
 #endif
 		}
 		idleThreads--;

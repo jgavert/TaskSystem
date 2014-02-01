@@ -7,20 +7,19 @@
 #include "tasksystem.hpp"
 #define THREADS 4
 #define SAMPLES 2000000000
-#define WORKLOAD 20
+#define WORKLOAD 200
 
 class mathfunc
 {
 public:
-  void pii(void* input, void* output)
+  long double pii(long double y1, long double y2)
   {
-    long double *x = (long double*) output;
-    long double *y = (long double*) input;
-    *x = 0;
-    for (int n = y[0]; n <= y[1]; n++)
+    long double x = 0;
+    for (int n = y1; n <= y2; n++)
     {
-      *x += 1/pow(n,2.0);
+      x += 1/pow(n,2.0);
     }
+    return x;
   }
 };
 
@@ -55,9 +54,8 @@ int main(void)
   }
   TaskSystem manager(THREADS);
   int workID = manager.newWork();
-  //printf("First workID: %d", workID);
   for (int i=0; i<WORKLOAD;i++)
-    manager.newTask([&](){mathlib.pii((void*)(input+(i*2)), (void*)(output+i));}, workID);
+    manager.newTask([&](){output[i] = mathlib.pii(*(input+(i*2)), *(input+(i*2)+1));}, workID);
 
   while (!manager.taskDone(workID)){std::this_thread::sleep_for(std::chrono::milliseconds(10));}
   //while (!manager.taskDone(workID2)){}
@@ -68,7 +66,7 @@ int main(void)
   }
 
   double pi = sqrt(6*(1+x));
-  std::cout << "Pii approx is " << pi << std::endl;
-  //std::cout << "Pii approx is " << pii2() << std::endl;
+//  std::cout << "singlethread: Pii approx is " << pii2() << std::endl;
+  std::cout << "multithread:  Pii approx is " << pi << std::endl;
   return 0;
 }
