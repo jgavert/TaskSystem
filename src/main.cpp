@@ -5,7 +5,6 @@
 #include <chrono>
 #include <functional>
 #include "tasksystem.hpp"
-#define THREADS 4
 #define SAMPLES 2000000000
 #define WORKLOAD 200
 
@@ -55,8 +54,10 @@ int main(void)
   std::cout << "Found " << std::thread::hardware_concurrency() << " logical cores.\n";
   TaskSystem manager;
   int workID = manager.newWork();
-  for (int i=0; i<WORKLOAD;i++)
-    manager.newTask([&](){output[i] = mathlib.pii(*(input+(i*2)), *(input+(i*2)+1));}, workID);
+  for (int i=0; i<WORKLOAD;i++) {
+    manager.newTask([&](){output[i] = mathlib.pii(input[i*2], input[i*2+1]);}, workID);
+    [&](){std::cout << "Task: i: " << i << ", output: " << output[i] << ", input: " << input[i*2] << ", input2: " << input[i*2] << ".\n";}();
+  }
 
   while (!manager.taskDone(workID)){std::this_thread::sleep_for(std::chrono::milliseconds(10));}
   //while (!manager.taskDone(workID2)){}
@@ -68,6 +69,6 @@ int main(void)
 
   double pi = sqrt(6*(1+x));
   std::cout << "multithread:  Pii approx is " << pi << std::endl;
-  std::cout << "singlethread: Pii approx is " << pii2() << std::endl;
+  //std::cout << "singlethread: Pii approx is " << pii2() << std::endl;
   return 0;
 }
