@@ -2,3 +2,6 @@ Projects idea is to provide a thread pool which handles jobs when given to the p
 
 Should compile on a linux with g++/clang with c++11 support. Or with some tweaks, on windows and mac.
 
+Additional notes:
+  Please use modern compiler, g++-4.8 or so. I fear g++-4.7 produces faulty assembler code for lambda and thread which results in segfault when using more than -O0 optimization level.
+  Clang currently doesnt work...
