@@ -74,8 +74,8 @@ int main(void)
   timer.stop(true);
   */
   long double pi = 0.0;
+  TaskSystem manager;
   timer.bfunc([&](){
-    TaskSystem manager;
     int workID = manager.newWork();
     for (int i=0; i<WORKLOAD;i++) {
       manager.newTask([&](){output[i] = mathlib.pii(input[i*2], input[i*2+1]);}, workID);
