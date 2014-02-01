@@ -4,7 +4,7 @@ PROGRAM_DIRS := $(DIRS)
 WARNINGS := -pedantic -Wall -Wextra
 
 CXX      := g++
-CXXFLAGS := $(WARNINGS) -std=c++11 -O2
+CXXFLAGS := $(WARNINGS) -std=c++11 -Ofast
 
 LIBS := -pthread -Wl,--no-as-needed
 

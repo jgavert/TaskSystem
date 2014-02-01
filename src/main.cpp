@@ -32,7 +32,7 @@ double pii2() // singlecore bruteforce
     x += 1/pow(n,2.0);
   }
   //printf("%Lf\n", x);
-  double pi =sqrt(6*(1+x));
+  double pi = sqrt(6*(1+x));
   return pi;
 }
 
@@ -52,7 +52,8 @@ int main(void)
     z += splitter;
     input[i+1] = z;
   }
-  TaskSystem manager(THREADS);
+  std::cout << "Found " << std::thread::hardware_concurrency() << " logical cores.\n";
+  TaskSystem manager(std::thread::hardware_concurrency());
   int workID = manager.newWork();
   for (int i=0; i<WORKLOAD;i++)
     manager.newTask([&](){output[i] = mathlib.pii(*(input+(i*2)), *(input+(i*2)+1));}, workID);
@@ -66,7 +67,7 @@ int main(void)
   }
 
   double pi = sqrt(6*(1+x));
-//  std::cout << "singlethread: Pii approx is " << pii2() << std::endl;
   std::cout << "multithread:  Pii approx is " << pi << std::endl;
+  std::cout << "singlethread: Pii approx is " << pii2() << std::endl;
   return 0;
 }

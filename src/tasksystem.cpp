@@ -1,6 +1,6 @@
 #include "tasksystem.hpp"
 #define WORKSPACE 50
-#define VERBOSE true
+#define VERBOSE false
 
 std::deque<task*> work;
 std::atomic<int> workCounter;
@@ -54,14 +54,14 @@ void sleepAndWork(int id)
 // considering deprecating this function
 // better just keep this as a async system
 
-TaskSystem::TaskSystem(int threads)
+TaskSystem::TaskSystem(unsigned int threads)
 {
 	for (int i=0;i<WORKSPACE;i++)
 		workIDs.push_back(WORKSPACE-i);
 	alive = true;
 	idleThreads = threads;
 	threadCount = threads;
-  for (int i=0;i<threads;i++)
+  for (unsigned int i=0;i<threads;i++)
     workers.push_back(std::thread(sleepAndWork, i+1));
 }
 
@@ -69,7 +69,7 @@ TaskSystem::~TaskSystem()
 {
 	alive = false;
 	cv.notify_all();
-  for (int i=0;i<threadCount;i++)
+  for (unsigned int i=0;i<threadCount;i++)
     workers[i].join();
 }
 
@@ -102,5 +102,5 @@ bool TaskSystem::taskDone(int taskID)
 bool TaskSystem::done()
 {
 	//std::cout << "stuff: " << idleThreads << ", " << threadCount << ", " << workCounter << ", " << work.size() << std::endl;
-	return idleThreads == threadCount && workCounter == 0 && work.empty();
+	return static_cast<unsigned int>(idleThreads) == threadCount && workCounter == 0 && work.empty();
 }

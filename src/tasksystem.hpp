@@ -25,14 +25,14 @@ struct task
 class TaskSystem
 {
 public:
-	TaskSystem(int);
+	TaskSystem(unsigned int);
 	~TaskSystem();
 	void newTask(std::function<void()>, int taskID);
 	bool done();
 	int newWork();
 	bool taskDone(int );
 private:
-	int threadCount;
+	unsigned int threadCount;
 };
 
 #endif
