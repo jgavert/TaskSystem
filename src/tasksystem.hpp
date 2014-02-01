@@ -1,5 +1,5 @@
 #ifndef tasksystem_H
-#define	tasksystem_H
+#define tasksystem_H
 #include <thread>
 #include <vector>
 #include <mutex>
@@ -8,38 +8,31 @@
 #include <deque>
 #include <chrono>
 #include <condition_variable>
+#include <functional>
 
 struct task
 {
 	task(){};
-	task(void (*fun)(void*, void*), void* in, void* out, int workID)
+	task(std::function<void()> fun, int workID)
 	{
 		func = fun;
-		input = in;
-		output = out;
 		id = workID;
 	};
-	void (*func)(void*, void*);
-	void* input;
-	void* output;
+  std::function<void()> func;
 	int id;
 };
 
 class TaskSystem
 {
 public:
-	TaskSystem(int, bool);
+	TaskSystem(int);
 	~TaskSystem();
-	void newTask(void (*func)(void*, void*), void*, void*);
+	void newTask(std::function<void()>, int taskID);
 	bool done();
-	void help(int);
 	int newWork();
 	bool taskDone(int );
 private:
 	int threadCount;
-	bool outsideHelp;
-	int workID;
-
 };
 
 #endif
