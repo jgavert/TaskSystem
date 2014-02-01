@@ -25,6 +25,7 @@ struct task
 class TaskSystem
 {
 public:
+	TaskSystem();
 	TaskSystem(unsigned int);
 	~TaskSystem();
 	void newTask(std::function<void()>, int taskID);

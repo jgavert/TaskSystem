@@ -51,8 +51,17 @@ void sleepAndWork(int id)
 	}
 }
 
-// considering deprecating this function
-// better just keep this as a async system
+TaskSystem::TaskSystem()
+{
+  unsigned int threads = std::thread::hardware_concurrency();
+	for (int i=0;i<WORKSPACE;i++)
+		workIDs.push_back(WORKSPACE-i);
+	alive = true;
+	idleThreads = threads;
+	threadCount = threads;
+  for (unsigned int i=0;i<threads;i++)
+    workers.push_back(std::thread(sleepAndWork, i+1));
+}
 
 TaskSystem::TaskSystem(unsigned int threads)
 {

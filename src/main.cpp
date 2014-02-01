@@ -53,7 +53,7 @@ int main(void)
     input[i+1] = z;
   }
   std::cout << "Found " << std::thread::hardware_concurrency() << " logical cores.\n";
-  TaskSystem manager(std::thread::hardware_concurrency());
+  TaskSystem manager;
   int workID = manager.newWork();
   for (int i=0; i<WORKLOAD;i++)
     manager.newTask([&](){output[i] = mathlib.pii(*(input+(i*2)), *(input+(i*2)+1));}, workID);
