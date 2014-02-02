@@ -6,7 +6,7 @@
 #include <functional>
 #include "tasksystem.hpp"
 #include "bentsumaakaa.hpp"
-#define SAMPLES 20000000
+#define SAMPLES 2000000000
 #define WORKLOAD 200
 
 class mathfunc
@@ -54,12 +54,12 @@ int main(void)
   }
   std::cout << "Found " << std::thread::hardware_concurrency() << " logical cores.\n";
   Bentsumaakaa timer;
-
+/*
   timer.start(true);
-  TaskSystem manager(1);
+  TaskSystem manager;
   int workID = manager.newWork();
   for (int i=0; i<WORKLOAD;i++) {
-    manager.newTask([&](){output[i] = mathlib.pii(input[i*2], input[i*2+1]);}, workID);
+    manager.newTask([=, &mathlib](){output[i] = mathlib.pii(input[i*2], input[i*2+1]);}, workID);
     //[&](){std::cout << "Task: i: " << i << ", output: " << output[i] << ", input: " << input[i*2] << ", input2: " << input[i*2] << ".\n";}();
   }
 
@@ -72,14 +72,14 @@ int main(void)
 
   long double pi = sqrt(6*(1+x));
   timer.stop(true);
-  /*
+  */
   long double pi = 0.0;
   TaskSystem manager;
   long workload = WORKLOAD;
-  timer.bfunc([&](){
+  timer.bfunc([&](){ // Not entirely sure what the [&] implies on the rest of code, seems to work
     int workID = manager.newWork();
     for (int i=0; i<workload;i++) {
-      manager.newTask([&](){output[i] = mathlib.pii(input[i*2], input[i*2+1]);}, workID);
+      manager.newTask([=, &mathlib](){output[i] = mathlib.pii(input[i*2], input[i*2+1]);}, workID);
       //[&](){std::cout << "Task: i: " << i << ", output: " << output[i] << ", input: " << input[i*2] << ", input2: " << input[i*2] << ".\n";}();
     }
 
@@ -92,8 +92,8 @@ int main(void)
 
     pi = sqrt(6*(1+x));
     x = 0.0;
-  }, 4, true);
-  */
+  }, 10, true);
+  /**/
   std::cout << "multithread:  Pii approx is " << pi << std::endl;
   //std::cout << "singlethread: Pii approx is " << pii2() << std::endl;
   return 1;

@@ -3,8 +3,8 @@ PROGRAM_DIRS := $(DIRS)
 
 WARNINGS := -pedantic -Wall -Wextra
 
-CXX      := g++
-CXXFLAGS := $(WARNINGS) -std=c++11 -O0
+CXX      := clang++
+CXXFLAGS := $(WARNINGS) -std=c++11 -O3
 
 LIBS := -pthread -Wl,--no-as-needed
 

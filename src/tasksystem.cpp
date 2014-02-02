@@ -96,7 +96,7 @@ void TaskSystem::newTask(std::function<void()> func,int taskID)
     work.push_back(new task(func, taskID));
     billboard[taskID]++;
   }
-  cv.notify_all();
+  cv.notify_one();
 }
 
 bool TaskSystem::taskDone(int taskID)
