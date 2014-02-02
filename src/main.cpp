@@ -6,7 +6,7 @@
 #include <functional>
 #include "tasksystem.hpp"
 #include "bentsumaakaa.hpp"
-#define SAMPLES 2000000000
+#define SAMPLES 20000000
 #define WORKLOAD 200
 
 class mathfunc
@@ -54,9 +54,9 @@ int main(void)
   }
   std::cout << "Found " << std::thread::hardware_concurrency() << " logical cores.\n";
   Bentsumaakaa timer;
-  /*
+
   timer.start(true);
-  TaskSystem manager;
+  TaskSystem manager(1);
   int workID = manager.newWork();
   for (int i=0; i<WORKLOAD;i++) {
     manager.newTask([&](){output[i] = mathlib.pii(input[i*2], input[i*2+1]);}, workID);
@@ -70,21 +70,22 @@ int main(void)
     x += output[i];
   }
 
-  double pi = sqrt(6*(1+x));
+  long double pi = sqrt(6*(1+x));
   timer.stop(true);
-  */
+  /*
   long double pi = 0.0;
   TaskSystem manager;
+  long workload = WORKLOAD;
   timer.bfunc([&](){
     int workID = manager.newWork();
-    for (int i=0; i<WORKLOAD;i++) {
+    for (int i=0; i<workload;i++) {
       manager.newTask([&](){output[i] = mathlib.pii(input[i*2], input[i*2+1]);}, workID);
       //[&](){std::cout << "Task: i: " << i << ", output: " << output[i] << ", input: " << input[i*2] << ", input2: " << input[i*2] << ".\n";}();
     }
 
     while (!manager.taskDone(workID)){std::this_thread::sleep_for(std::chrono::milliseconds(10));}
 
-    for (int i=0;i<WORKLOAD;i++)
+    for (int i=0;i<workload;i++)
     {
       x += output[i];
     }
@@ -92,6 +93,7 @@ int main(void)
     pi = sqrt(6*(1+x));
     x = 0.0;
   }, 4, true);
+  */
   std::cout << "multithread:  Pii approx is " << pi << std::endl;
   //std::cout << "singlethread: Pii approx is " << pii2() << std::endl;
   return 1;
