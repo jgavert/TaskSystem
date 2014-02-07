@@ -1,5 +1,5 @@
 #include "tasksystem.hpp"
-#define VERBOSE false
+#define VERBOSE 0
 #define WORKSPACE 50
 
 

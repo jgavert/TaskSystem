@@ -1,3 +1,10 @@
 obj
 bin
 taskmanager.sublime-workspace
+win/Debug
+win/Release
+win/x64
+win/*.sdf
+win/*.opensdf
+win/*.user
+win/*.suo

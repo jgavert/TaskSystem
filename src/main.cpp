@@ -6,10 +6,10 @@
 #include <functional>
 #include "tasksystem.hpp"
 #include "bentsumaakaa.hpp"
-#define SAMPLES 2000000000
-#define WORKLOAD 200
+long long SAMPLES = 2000000000L;
+int WORKLOAD = 200;
 
-class mathfunc
+class mathfunc // just to know how to handle functions inside classes
 {
 public:
   long double pii(long double y1, long double y2)
@@ -54,7 +54,7 @@ int main(void)
   }
   std::cout << "Found " << std::thread::hardware_concurrency() << " logical cores.\n";
   Bentsumaakaa timer;
-/*
+
   timer.start(true);
   TaskSystem manager;
   int workID = manager.newWork();
@@ -72,7 +72,7 @@ int main(void)
 
   long double pi = sqrt(6*(1+x));
   timer.stop(true);
-  */
+  /*
   TaskSystem manager;
   long double pi = 0.0;
   timer.bfunc([&](){ // Not entirely sure what the [&] implies on the rest of code, seems to work
@@ -92,8 +92,11 @@ int main(void)
     pi = sqrt(6*(1+x));
     x = 0.0;
   }, 10, true);
-  /**/
+  **/
   std::cout << "multithread:  Pii approx is " << pi << std::endl;
   //std::cout << "singlethread: Pii approx is " << pii2() << std::endl;
+#if WIN32
+  std::cin.get();
+#endif
   return 1;
 }
