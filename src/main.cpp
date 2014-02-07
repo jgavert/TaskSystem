@@ -73,19 +73,18 @@ int main(void)
   long double pi = sqrt(6*(1+x));
   timer.stop(true);
   */
-  long double pi = 0.0;
   TaskSystem manager;
-  long workload = WORKLOAD;
+  long double pi = 0.0;
   timer.bfunc([&](){ // Not entirely sure what the [&] implies on the rest of code, seems to work
     int workID = manager.newWork();
-    for (int i=0; i<workload;i++) {
+    for (int i=0; i<WORKLOAD;i++) {
       manager.newTask([=, &mathlib](){output[i] = mathlib.pii(input[i*2], input[i*2+1]);}, workID);
       //[&](){std::cout << "Task: i: " << i << ", output: " << output[i] << ", input: " << input[i*2] << ", input2: " << input[i*2] << ".\n";}();
     }
 
     while (!manager.taskDone(workID)){std::this_thread::sleep_for(std::chrono::milliseconds(10));}
 
-    for (int i=0;i<workload;i++)
+    for (int i=0;i<WORKLOAD;i++)
     {
       x += output[i];
     }

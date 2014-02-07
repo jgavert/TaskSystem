@@ -1,17 +1,9 @@
 #include "tasksystem.hpp"
-#define WORKSPACE 50
 #define VERBOSE false
+#define WORKSPACE 50
 
-std::deque<task*> work;
-std::vector<std::thread> workers;
-std::atomic<bool> alive;
-std::atomic<int> idleThreads;
-std::vector<int> workIDs;
-std::atomic<int> billboard[WORKSPACE];
-std::condition_variable cv;
-std::mutex mutex;
 
-void sleepAndWork(int id)
+void TaskSystem::sleepAndWork(unsigned int id)
 {
   bool gotWork = false;
   task* todo;
@@ -51,27 +43,30 @@ void sleepAndWork(int id)
   }
 }
 
-TaskSystem::TaskSystem()
+TaskSystem::TaskSystem():
+  threadCount(std::thread::hardware_concurrency()),
+  alive(true),
+  idleThreads(std::thread::hardware_concurrency())
 {
-  unsigned int threads = std::thread::hardware_concurrency();
+  for (int i=0;i<WORKSPACE;i++)
+    billboard[i] = 0;
   for (int i=0;i<WORKSPACE;i++)
     workIDs.push_back(WORKSPACE-i);
-  alive = true;
-  idleThreads = threads;
-  threadCount = threads;
-  for (unsigned int i=0;i<threads;i++)
-    workers.push_back(std::thread(sleepAndWork, threads-i));
+  for (unsigned int i=0;i<threadCount;i++)
+    workers.push_back(std::thread(&TaskSystem::sleepAndWork, this, threadCount-i));
 }
 
-TaskSystem::TaskSystem(unsigned int threads)
+TaskSystem::TaskSystem(unsigned int threads):
+  threadCount(threads),
+  alive(true),
+  idleThreads(threads)
 {
   for (int i=0;i<WORKSPACE;i++)
+    billboard[i] = 0;
+  for (int i=0;i<WORKSPACE;i++)
     workIDs.push_back(WORKSPACE-i);
-  alive = true;
-  idleThreads = threads;
-  threadCount = threads;
-  for (unsigned int i=0;i<threads;i++)
-    workers.push_back(std::thread(sleepAndWork, threads-i));
+  for (unsigned int i=0;i<threadCount;i++)
+    workers.push_back(std::thread(&TaskSystem::sleepAndWork, this, threadCount-i));
 }
 
 TaskSystem::~TaskSystem()
@@ -82,6 +77,7 @@ TaskSystem::~TaskSystem()
     workers[i].join();
 }
 
+// Returns a unique ID for which to add work for.
 int TaskSystem::newWork()
 {
   int workID = workIDs.back();
@@ -89,6 +85,7 @@ int TaskSystem::newWork()
   return workID;
 }
 
+// Adds a new task for the workers to chew on
 void TaskSystem::newTask(std::function<void()> func,int taskID)
 {
   {
@@ -99,14 +96,17 @@ void TaskSystem::newTask(std::function<void()> func,int taskID)
   cv.notify_one();
 }
 
+// This method is probably the one you will use to check if work is done.
 bool TaskSystem::taskDone(int taskID)
 {
   if (billboard[taskID] == 0) {
     workIDs.push_back(taskID);
     return true;
-  }	else return false;
+  }
+    else return false;
 }
 
+// General method for asking if we are done
 bool TaskSystem::done()
 {
   std::lock_guard<std::mutex> guard(mutex);
